@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Obtener Datos y Enviar a Telegram</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.28/ua-parser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ua-parser-js/0.7.28/ua-parser.min.js"></script>
 </head>
 <body>
   <h1>Obtener Datos y Enviar a Telegram</h1>
@@ -59,25 +59,9 @@
         deviceIdentifier = generateDeviceIdentifier(); // Generar un identificador único
         localStorage.setItem('deviceIdentifier', deviceIdentifier);
         localStorage.setItem('isFirstTime', 'false');
-        console.log('Es el primer inicio del dispositivo');
-        sendToTelegram('Hola, el usuario ha ingresado a las ' + getCurrentTime() + '\n\n' +
-                      'Información del dispositivo:\n' +
-                      'Dispositivo: ' + userData.device + '\n' +
-                      'Marca: ' + userData.brand + '\n' +
-                      'IP: ' + userData.ip + '\n' +
-                      'Este usuario es: Primer inicio\n' +
-                      'El usuario ha cambiado de identidad: No\n' +
-                      'El usuario ha cambiado de identidad: 0 veces');
+        sendToTelegram(`Hola, el usuario ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\nEste usuario es: Primer inicio\nEl usuario ha cambiado de identidad: No\nEl usuario ha cambiado de identidad: 0 veces`);
       } else if (deviceIdentifier === localStorage.getItem('deviceIdentifier')) {
-        console.log('Los datos del dispositivo son iguales');
-        sendToTelegram('Hola, el usuario ha ingresado a las ' + getCurrentTime() + '\n\n' +
-                      'Información del dispositivo:\n' +
-                      'Dispositivo: ' + userData.device + '\n' +
-                      'Marca: ' + userData.brand + '\n' +
-                      'IP: ' + userData.ip + '\n' +
-                      'Este usuario es: No es el primer inicio\n' +
-                      'El usuario ha cambiado de identidad: Sí\n' +
-                      'El usuario ha cambiado de identidad: ' + getIdentityChanges() + ' veces');
+        sendToTelegram(`Hola, el usuario ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\nEste usuario es: No es el primer inicio\nEl usuario ha cambiado de identidad: Sí\nEl usuario ha cambiado de identidad: ${getIdentityChanges()} veces`);
       }
 
       // Actualizar la cantidad de veces que el usuario ha cambiado de identidad
@@ -88,7 +72,7 @@
 
     }
 
-    // Obtener la hora actual en formato de 12 horas
+        // Obtener la hora actual en formato de 12 horas
     function getCurrentTime() {
       var now = new Date();
       var hours = now.getHours();
