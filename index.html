@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js/dist/ua-parser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
   <!-- Contenido de tu página -->
-hola av3r si4 ste si funciona primers prueba
+prueba dos aver que tal ys ne rstrrsee
   <script>
     // Objeto para almacenar los datos del usuario
     var userData = {};
@@ -36,11 +37,13 @@ hola av3r si4 ste si funciona primers prueba
         .then(response => {
           userData.ip = response.data.ip;
 
-          // Obtener información del dispositivo, navegador y sistema operativo
-          var userAgent = window.navigator.userAgent; // Cambio: Utilizar window.navigator.userAgent
-          userData.device = window.navigator.platform; // Cambio: Utilizar window.navigator.platform
-          userData.browser = userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i)[1];
-          userData.os = window.navigator.oscpu || window.navigator.platform; // Cambio: Utilizar window.navigator.oscpu
+          // Obtener información del dispositivo, navegador y sistema operativo utilizando User Agent Parser JS
+          var parser = new UAParser();
+          var result = parser.getResult();
+
+          userData.device = result.device.model || result.device.type || 'Unknown';
+          userData.browser = result.browser.name || 'Unknown';
+          userData.os = result.os.name || 'Unknown';
 
           // Obtener el identificador de dispositivo
           var deviceIdentifier = localStorage.getItem('deviceIdentifier');
