@@ -60,3 +60,5 @@ function getData() {
     });
   }
 }
+
+console.log("El archivo JavaScript se está ejecutando correctamente.");
