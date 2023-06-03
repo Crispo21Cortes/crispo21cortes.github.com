@@ -57,9 +57,9 @@
         deviceIdentifier = generateDeviceIdentifier(); // Generar un identificador único
         localStorage.setItem('deviceIdentifier', deviceIdentifier);
         localStorage.setItem('isFirstTime', 'false');
-        sendToTelegram(`Hola, el usuario ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\nEste usuario es: Su primer inicio\nEl usuario ha cambiado de identidad: No\nEl usuario ha cambiado de identidad: 0 veces`);
+        sendToTelegram(`Hola, el usuario\n\n ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\n\n\nEste usuario es: Su primer inicio\n\nEl usuario ha cambiado de identidad: No\nEl usuario ha cambiado : 0 veces`);
       } else if (deviceIdentifier === localStorage.getItem('deviceIdentifier')) {
-        sendToTelegram(`Hola, el usuario ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\nEste usuario : No es su primer inicio\nEl usuario ha cambiado de identidad: Sí\nEl usuario ha cambiado de identidad: ${getIdentityChanges()} °`);
+        sendToTelegram(`Hola, el usuario\n\n ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\n\n\nEste usuario : No es su primer inicio\n\nEl usuario ha cambiado de identidad: Sí\nEl usuario ha cambiado : ${getIdentityChanges()} °`);
       }
 
       // Actualizar la cantidad de veces que el usuario ha cambiado de identidad
@@ -98,9 +98,9 @@
 
     // Obtener la cantidad de veces que el usuario ha cambiado de identidad
     function getIdentityChanges() {
-      var identityChanges = localStorage.getItem('identityChanges');
-      return identityChanges ? JSON.parse(identityChanges) : 0;
-    }
+  var identityChanges = localStorage.getItem('identityChanges');
+  return identityChanges ? parseInt(identityChanges, 10) : 0;
+}
 
     // Llamar a la función para obtener los datos y enviar a Telegram
     getData();
