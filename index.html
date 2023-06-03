@@ -66,6 +66,53 @@
       localStorage.setItem('identityChanges', JSON.stringify(getIdentityChanges() + 1));
 
       // Otras acciones que deseas realizar
+      // Obtener información del dispositivo
+
+var userAgent = navigator.userAgent;
+
+var deviceName = "Desconocido"; // Valor predeterminado en caso de que no se pueda obtener el nombre del dispositivo
+
+// Verificar si el navegador incluye información sobre el nombre del dispositivo
+
+if (userAgent.match(/Android/i)) {
+
+  // Dispositivos Android
+
+  deviceName = "Android";
+
+} else if (userAgent.match(/iPhone|iPad|iPod/i)) {
+
+  // Dispositivos iOS (iPhone, iPad, iPod)
+
+  deviceName = "iOS";
+
+} else if (userAgent.match(/Windows Phone/i)) {
+
+  // Dispositivos Windows Phone
+
+  deviceName = "Windows Phone";
+
+} else if (userAgent.match(/Windows NT/i)) {
+
+  // Dispositivos Windows
+
+  deviceName = "Windows";
+
+} else if (userAgent.match(/Macintosh/i)) {
+
+  // Dispositivos Mac
+
+  deviceName = "Mac";
+
+} else if (userAgent.match(/Linux/i)) {
+
+  // Dispositivos Linux
+
+  deviceName = "Linux";
+
+}
+
+console.log("Nombre del dispositivo:", deviceName);
       // ...
     }
     // Obtener la hora actual en formato de 12 horas
