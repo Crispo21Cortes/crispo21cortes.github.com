@@ -4,113 +4,14 @@
   <title>Obtener Datos y Enviar a Telegram</title>
   <script src="/ua-parser.min.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="datauser.js"></script>
+  <script src="identifiuser.js"></script>
+  <script src="sendtelegram.js"></script>
 </head>
 <body>
   <h1>prueba extensa1</h1>
 
   <script>
-    // Objeto para almacenar los datos del usuario
-    var userData = {};
-    // Función para enviar datos a Telegram
-    function sendToTelegram(message) {
-      // Verificar si el mensaje está vacío
-      if (!message) {
-        console.error('Error al enviar el mensaje a Telegram: El texto del mensaje está vacío');
-        return;
-      }
-
-      const botToken = '1597773806:AAFh0xrEMv7pmSuDF84XGc5MA5C7SMdiKZw'; // Agrega aquí el token de tu bot de Telegram
-      const chatId = '1116794830'; // Agrega aquí el ID de tu chat de Telegram
-
-      const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-      const data = {
-        chat_id: chatId,
-        text: message
-      };
-
-      axios.post(telegramUrl, data)
-        .then(response => {
-          console.log('Mensaje enviado a Telegram:', response.data);
-        })
-        .catch(error => {
-          console.error('Error al enviar el mensaje a Telegram:', error.response.data);
-        });
-    }
-
-    // Obtener datos de dispositivo, IP y mostrar mensaje en Telegram
-    function getData() {
-      // Obtener información del dispositivo, navegador y sistema operativo
-      var userAgent = navigator.userAgent;
-      var parser = new UAParser();
-      var result = parser.setUA(userAgent).getResult();
-
-      userData.device = result.device.model || '';
-      userData.brand = result.device.vendor || '';
-      userData.browser = result.browser.name || '';
-      userData.os = result.os.name || '';
-      userData.ua = userAgent;
-
-      // Obtener el identificador de dispositivo
-      var deviceIdentifier = localStorage.getItem('deviceIdentifier');
-      var isFirstTime = localStorage.getItem('isFirstTime') === null;
-
-      if (isFirstTime) {
-        deviceIdentifier = generateDeviceIdentifier(); // Generar un identificador único
-        localStorage.setItem('deviceIdentifier', deviceIdentifier);
-        localStorage.setItem('isFirstTime', 'false');
-        userData.ua = result.ua || ''; userData.cpu = result.cpu || {}; userData.engine = result.engine || {};
-        
-        sendToTelegram(`Hola, el usuario\n\n ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\n\nInformación adicional:\nAgente de usuario: ${userData.ua}\nNavegador: ${userData.browser.name}\nVersión del navegador: ${userData.browser.version}\nCPU: ${userData.cpu.architecture}\nMotor de renderizado: ${userData.engine.name}\nSistema operativo: ${userData.os.name}\n\nEste usuario es: Su primer inicio\n\nEl usuario ha cambiado de identidad: No\nEl usuario ha cambiado : 0 veces`);
-      } else if (deviceIdentifier === localStorage.getItem('deviceIdentifier')) {
-        userData.ua = result.ua || '';
-  userData.cpu = result.cpu || {};
-  userData.engine = result.engine || {};
-        sendToTelegram(`Hola, el usuario\n\n ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\n\nInformación adicional:\nAgente de usuario: ${userData.ua}\nNavegador: ${userData.browser.name}\nVersión del navegador: ${userData.browser.version}\nCPU: ${userData.cpu.architecture}\nMotor de renderizado: ${userData.engine.name}\nSistema operativo: ${userData.os.name}\n\nEste usuario no es su primer inicio\n\nEl usuario ha cambiado de identidad: Sí\nEl usuario ha cambiado: ${getIdentityChanges()} veces`);
-      }
-
-      // Actualizar la cantidad de veces que el usuario ha cambiado de identidad
-      localStorage.setItem('identityChanges', JSON.stringify(getIdentityChanges() + 1));
-
-      // Otras acciones que deseas realizar
-   
-
-
-      // ...
-    }
-    // Obtener la hora actual en formato de 12 horas
-    function getCurrentTime() {
-      var now = new Date();
-      var hours = now.getHours();
-      var minutes = now.getMinutes();
-
-      // Convertir a formato de 12 horas
-      var period = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-
-      return hours + ':' + minutes + ' ' + period;
-    }
-
-    // Generar un identificador único para el dispositivo
-    function generateDeviceIdentifier() {
-      function uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0,
-            v = c === 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      }
-
-      return uuidv4();
-    }
-
-    // Obtener la cantidad de veces que el usuario ha cambiado de identidad
-    function getIdentityChanges() {
-  var identityChanges = localStorage.getItem('identityChanges');
-  return identityChanges ? parseInt(identityChanges, 10) : 0;
-}
-
     // Llamar a la función para obtener los datos y enviar a Telegram
     getData();
   </script>
