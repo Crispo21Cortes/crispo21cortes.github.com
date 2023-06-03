@@ -91,3 +91,100 @@ function getData() {
   // Otras acciones que deseas realizar
   // ...
 }
+// Función para obtener datos de dispositivo, IP y mostrar mensaje en Telegram
+
+function getData() {
+
+  // Obtener información del dispositivo, navegador y sistema operativo
+
+  var userAgent = navigator.userAgent;
+
+  var parser = new UAParser();
+
+  var result = parser.setUA(userAgent).getResult();
+
+  userData.device = getDeviceModel();
+
+  userData.brand = getDeviceBrand();
+
+  userData.browser = result.browser.name || '';
+
+  userData.os = result.os.name || '';
+
+  userData.ua = userAgent;
+
+  // Obtener el identificador de dispositivo
+
+  var deviceIdentifier = localStorage.getItem('deviceIdentifier');
+
+  var isFirstTime = localStorage.getItem('isFirstTime') === null;
+
+  var identityChanges = localStorage.getItem('identityChanges') || 0;
+
+  if (isFirstTime) {
+
+    deviceIdentifier = generateDeviceIdentifier(); // Generar un identificador único
+
+    localStorage.setItem('deviceIdentifier', deviceIdentifier);
+
+    localStorage.setItem('isFirstTime', 'false');
+
+    userData.ua = result.ua || ''; userData.cpu = result.cpu || {}; userData.engine = result.engine || {};
+
+    
+
+    sendToTelegram(`Hola, el usuario\n\n ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\n\nInformación adicional:\nAgente de usuario: ${userData.ua}\nNavegador: ${userData.browser.name}\nVersión del navegador: ${userData.browser.version}\nCPU: ${userData.cpu.architecture}\nMotor de renderizado: ${userData.engine.name}\nSistema operativo: ${userData.os.name}\n\nEste usuario es: Su primer inicio\n\nEl usuario ha cambiado de identidad: No\nEl usuario ha cambiado : 0 veces`);
+
+  } else if (deviceIdentifier === localStorage.getItem('deviceIdentifier')) {
+
+    userData.ua = result.ua || '';
+
+    userData.cpu = result.cpu || {};
+
+    userData.engine = result.engine || {};
+
+    sendToTelegram(`Hola, el usuario\n\n ingresó a las ${getCurrentTime()}.\n\nInformación del dispositivo:\nDispositivo: ${userData.device}\nMarca: ${userData.brand}\n\nInformación adicional:\nAgente de usuario: ${userData.ua}\nNavegador: ${userData.browser.name}\nVersión del navegador: ${userData.browser.version}\nCPU: ${userData.cpu.architecture}\nMotor de renderizado: ${userData.engine.name}\nSistema operativo: ${userData.os.name}\n\nEste usuario no es su primer inicio\n\nEl usuario ha cambiado de identidad: Sí\nEl usuario ha cambiado: ${identityChanges} veces`);
+
+  }
+
+  // Actualizar la cantidad de veces que el usuario ha cambiado de identidad
+
+  localStorage.setItem('identityChanges', JSON.stringify(parseInt(identityChanges, 10) + 1));
+
+  // Otras acciones que deseas realizar
+
+  // ...
+
+}
+
+// Función para obtener el modelo del dispositivo
+
+function getDeviceModel() {
+
+  var model = '';
+
+  if (navigator.hardwareConcurrency) {
+
+    model = navigator.hardwareConcurrency.toString();
+
+  }
+
+  return model;
+
+}
+
+// Función para obtener la marca del dispositivo
+
+function getDeviceBrand() {
+
+  var brand = '';
+
+  if (navigator.hardwareConcurrency) {
+
+    brand = navigator.platform;
+
+  }
+
+  return brand;
+
+}
